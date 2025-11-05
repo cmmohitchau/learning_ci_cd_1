@@ -1,0 +1,15 @@
+FROM node:24-alpine
+
+WORKDIR /usr/src/apps
+
+COPY tsconfig.json ./tsconfig.json
+
+COPY package-lock.json ./package-lock.json
+
+COPY package.json ./package.json
+
+RUN npm install
+
+COPY dist ./dist
+
+CMD ["npm" , "run" , "start"]
