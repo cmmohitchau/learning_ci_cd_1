@@ -23,3 +23,20 @@ jobs:
           file: ./Docker/dockerfile.backend
           push: true
           tags: mohitprasad004/mybackend:${{github.sha}}
+
+      - name: Deploy to the ec2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "pulling the docker image"
+            docker pull mohitprasad004/mybackend:${{github.sha}}
+
+            echo "deleting the old container if any"
+            docker stop mybackend
+            docker rm mybackend
+
+            echo "running the new container"
+            docker run -d -p 3002:3002 --name mybackend mohitprasad004/mybackend:${{github.sha}}
